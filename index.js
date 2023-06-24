@@ -13,31 +13,43 @@ const options = {
   minute: 'numeric',
   hour12: true
 };
-
-
-function addTask(){
-    if(searchbox.value === ''){
+function addTask() {
+    if (searchbox.value === '') {
         alert("You must write something!");
-    }
-    else{
-       let li = document.createElement("li");
-       li.innerHTML = searchbox.value;
-       userInput = prompt('Date/Time by which you would wish to complete your task?');
-       listcont.appendChild(li);
-       
-      
-       let span = document.createElement("span");
-       span.innerHTML= "\u00d7";
-       li.appendChild(span);
-       if(currentDate>=date){
-        alert("You have crossed the time limit set by you to finish the following task. Complete it asap!");
-        console.log("You have crossed!");
-       }
-       
+    } else {
+        let deadlineDate = document.getElementById("deadline-date").value;
+
+        if (deadlineDate === '') {
+            alert("Please specify the completion date!");
+            return;
+        }
+
+        let li = document.createElement("li");
+        li.innerHTML = searchbox.value;
+
+        let deadlineDateTime = new Date(deadlineDate);
+
+        if (deadlineDateTime < currentDate) {
+            alert("Enter a valid deadline!");
+            return;
+        }
+
+        listcont.appendChild(li);
+
+        let span = document.createElement("span");
+        span.innerHTML = "\u00d7";
+        li.appendChild(span);
+
+        if (currentDate >= deadlineDateTime) {
+            alert("You have crossed the deadline to finish the following task. Complete it as soon as possible!");
+            console.log("You have crossed the deadline!");
+        }
     }
     searchbox.value = "";
-    saveData()
+    saveData();
 }
+
+
 
 listcont.addEventListener("click",function(e){
     if(e.target.tagName === "LI"){
@@ -55,15 +67,10 @@ function saveData(){
 }
 function showList(){
     listcont.innerHTML = localStorage.getItem("data");
-}
-function showList() {
-    listcont.innerHTML = localStorage.getItem("data");
-  }
-  
+} 
   window.addEventListener("load", function() {
     showList();
   });
     
   const currentDateTime = currentDate.toLocaleString('en-US', options);
   console.log(currentDateTime);
-//   alert(currentDateTime);
